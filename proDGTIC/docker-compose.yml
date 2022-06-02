@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: jonathan
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: jonspirit/pro-dgtic:P1
+    container_name: pro-degetic-app
+    restart: always
+    working_dir: /var/www/
+    volumes: [ ./:/var/www ]
+    networks: [ test-net ]
+  
+  nginx:
+    image: nginx:1.21.6-alpine
+    container_name: pro-dgtic-nginx
+    restart: unless-stopped
+    ports:
+    - published: 8000
+      target: 80
+      protocol: tcp
+      mode: ingress
+    volumes:
+    - ./:/var/www
+    - ./nginx:/etc/nginx/conf.d
+    networks: [ test-net ]
+
+networks:
+  test-net:
